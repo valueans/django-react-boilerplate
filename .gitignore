@@ -1,0 +1,11 @@
+*.pyc
+env/
+.terraform
+.env
+postgres-data/
+venv/
+db.sqlite3
+.bash_history
+mediafiles/*
+staticfiles
+cerbot
