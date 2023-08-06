@@ -1,7 +1,7 @@
 # [Kapoor Software Solutions](https://kapoorsoftware.com)
 
 
-boostit
+kapoorsoftwaresolutions
 
 License: MIT
 

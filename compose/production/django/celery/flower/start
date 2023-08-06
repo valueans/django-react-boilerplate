@@ -5,7 +5,7 @@ set -o pipefail
 set -o nounset
 
 worker_ready() {
-    celery -A boostit inspect ping
+    celery -A kapoorsoftwaresolutions inspect ping
 }
 
 until worker_ready; do
@@ -14,4 +14,4 @@ until worker_ready; do
 done
 >&2 echo 'Celery workers is available'
 
-celery -A boostit --broker="${REDIS_URL}" flower --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"
+celery -A kapoorsoftwaresolutions --broker="${REDIS_URL}" flower --basic_auth="${CELERY_FLOWER_USER}:${CELERY_FLOWER_PASSWORD}"

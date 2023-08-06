@@ -13,9 +13,9 @@ from django_celery_beat.models import ClockedSchedule, SolarSchedule, IntervalSc
 from django.contrib.sites.models import Site
 from django.contrib.auth.models import Group
 
-admin.site.site_header = "boostit"
-admin.site.site_title = "boostit Admin Portal"
-admin.site.index_title = "boostit Admin"
+admin.site.site_header = "kapoorsoftwaresolutions"
+admin.site.site_title = "kapoorsoftwaresolutions Admin Portal"
+admin.site.index_title = "kapoorsoftwaresolutions Admin"
 
 admin.site.unregister(EmailAddress)
 admin.site.unregister(TokenProxy)
@@ -31,7 +31,7 @@ admin.site.unregister(Group)
 urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("admin/", admin.site.urls),
-    path("api/", include("boostit.api_router")),
+    path("api/", include("kapoorsoftwaresolutions.api_router")),
     path("users/", include("users.urls")),
     path("rest-auth/", include("dj_rest_auth.urls")),
     # Override email confirm to use allauth's HTML view instead of rest_auth's API vi
@@ -41,9 +41,9 @@ urlpatterns = [
 
 # swagger
 api_info = openapi.Info(
-    title="Boostit API",
+    title="kapoorsoftwaresolutions API",
     default_version="v1",
-    description="API documentation for Boostit App",
+    description="API documentation for kapoorsoftwaresolutions App",
 )
 
 schema_view = get_schema_view(

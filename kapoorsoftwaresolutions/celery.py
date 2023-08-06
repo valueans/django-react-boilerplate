@@ -5,9 +5,9 @@ from celery import Celery
 from django.conf import settings
 from celery.schedules import crontab
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "boostit.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kapoorsoftwaresolutions.settings")
 
-app = Celery("boostit")
+app = Celery("kapoorsoftwaresolutions")
 app.conf.enable_utc = False
 app.conf.update(timezone=settings.TIME_ZONE)
 

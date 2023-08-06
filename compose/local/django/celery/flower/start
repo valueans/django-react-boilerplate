@@ -4,7 +4,7 @@ set -o errexit
 set -o nounset
 
 worker_ready() {
-    celery -A boostit inspect ping
+    celery -A kapoorsoftwaresolutions inspect ping
 }
 
 until worker_ready; do
@@ -13,4 +13,4 @@ until worker_ready; do
 done
 >&2 echo 'Celery workers is available'
 
-celery -A boostit --broker="${REDIS_URL}" flower
+celery -A kapoorsoftwaresolutions --broker="${REDIS_URL}" flower

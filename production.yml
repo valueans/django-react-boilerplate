@@ -40,7 +40,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: boostit_postgres
+    image: kapoorsoftwaresolutions_postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data:Z
       - postgres_data_backups:/backups:z
@@ -56,7 +56,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: boostit_celery_worker
+    image: kapoorsoftwaresolutions_celery_worker
     command: /start-celeryworker
     volumes:
       - .:/app
@@ -70,7 +70,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: boostit_celery_beat
+    image: kapoorsoftwaresolutions_celery_beat
     command: /start-celerybeat
     volumes:
       - .:/app
@@ -84,7 +84,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/django/Dockerfile
-    image: boostit_celery_flower
+    image: kapoorsoftwaresolutions_celery_flower
     command: /start-flower
     volumes:
       - .:/app
