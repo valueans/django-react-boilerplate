@@ -1,7 +1,7 @@
 # [Kapoor Software Solutions](https://kapoorsoftware.com)
 
 
-kapoorsoftwaresolutions
+boostit
 
 License: MIT
 
@@ -16,45 +16,26 @@ License: MIT
 6. pip install -r requirement/local.txt
 
 ### using docker
-1. cd kapoor_software
-2. docker-compose -f local.yml up --build -d
-3. docker-compose -f local.yml run --rm django
+1. cd django-react-boilerplate
+2. docker-compose -f local.yml build
+3. docker-compose -f local.yml up
 if you want to create a superuser you can run 
-4. docker-compose -f local.yml run --rm django python manage.py createsuperuser
+4. docker-compose -f local.yml run --rm web python manage.py createsuperuser
 
-## Basic Commands
+### using in production
+1. run ```cd django-react-boilerplate```
+2. changing your domain at compose/production/nginx/nginx.conf replace example.com
+3. ```docker-compose -f production.yml build```
+4. ```docker-compose -f production.yml up -d```
+5. generate ssl for your domain by running if this run successfully by running ```docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d example.org```
+6. generate ssl for your domain by running if this run successfully by running ```docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example.org```
+7. run ```docker-compose -f production.yml stop```
+8. go to compose/production/nginx/nginx.conf and uncomment the commented part for port 443
+9. run ```docker-compose -f production.yml build```
+10. run ```docker-compose -f production.yml up -d```
+if you want to create a superuser you can run 
+11. ```docker-compose -f production.yml run --rm web python manage.py createsuperuser```
 
-### Setting Up Your Users
-
--   To create a **normal user account**, just go to Sign Up and fill out the form. Once you submit it, you'll see a "Verify Your E-mail Address" page. Go to your console to see a simulated email verification message. Copy the link into your browser. Now the user's email should be verified and ready to go.
-
--   To create a **superuser account**, use this command:
-
-        $ python manage.py createsuperuser
-
-For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
-
-### Type checks
-
-Running type checks with mypy:
-
-    $ mypy kapoor_software
-
-### Test coverage
-
-To run the tests, check your test coverage, and generate an HTML coverage report:
-
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
-
-#### Running tests with pytest
-
-    $ pytest
-
-### Live reloading and Sass CSS compilation
-
-Moved to [Live reloading and SASS compilation](https://cookiecutter-django.readthedocs.io/en/latest/developing-locally.html#sass-compilation-live-reloading).
 
 ### Celery
 
@@ -64,17 +45,14 @@ To run a celery worker:
 
 ``` bash
 cd kapoor_software
-celery -A config.celery_app worker -l info
+celery -A kapoorsoftwaresolutions worker -l info
 ```
 
 To run a celery  beat:
 
 ``` bash
 cd kapoor_software
-celery -A config.celery_app beat -l info
+celery -A kapoorsoftwaresolutions beat -l info
 ```
 
 Please note: For Celery's import magic to work, it is important *where* the celery commands are run. If you are in the same folder with *manage.py*, you should be right.
-
-
-### Docker

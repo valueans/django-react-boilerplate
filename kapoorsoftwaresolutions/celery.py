@@ -8,10 +8,12 @@ from celery.schedules import crontab
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "kapoorsoftwaresolutions.settings")
 
 app = Celery("kapoorsoftwaresolutions")
-app.conf.enable_utc = False
+app.conf.enable_utc = True
 app.conf.update(timezone=settings.TIME_ZONE)
 
+app.conf.broker_transport_options = {'visibility_timeout': 7200}
 app.config_from_object(settings, namespace="CELERY")
+
 
 app.conf.beat_schedule = {
     # daily database backup
@@ -21,10 +23,4 @@ app.conf.beat_schedule = {
     }
 }
 
-
 app.autodiscover_tasks()
-
-
-@app.task(bind=True)
-def debug_task(self):
-    print(f"Request: {self.request!r}")

@@ -25,21 +25,6 @@ RUN apt update \
   && apt update \
   && apt -y install postgresql-client-12
 
-## Install GDAL dependencies
-RUN apt-get install -y libgdal-dev g++
-#
-## Update C env vars so compiler can find gdal
-ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
-ENV C_INCLUDE_PATH=/usr/include/gdal
-#
-
-## Install CURL certs
-RUN apt-get install ca-certificates -y
-ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-
-## This will install latest version of GDAL
-RUN pip install numpy
-RUN pip install GDAL==2.4.4
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements.txt /requirements.txt

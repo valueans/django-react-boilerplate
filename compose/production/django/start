@@ -5,7 +5,8 @@ set -o pipefail
 set -o nounset
 
 
-python /app/manage.py migrate
 python /app/manage.py collectstatic --noinput
 
-gunicorn --workers=2 --worker-class=gevent --worker-connections=1000 kapoorsoftwaresolutions.wsgi --bind 0.0.0.0:8000
+python /app/manage.py migrate
+
+gunicorn kapoorsoftwaresolutions.wsgi --bind 0.0.0.0:8000

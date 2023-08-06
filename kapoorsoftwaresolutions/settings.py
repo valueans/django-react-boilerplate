@@ -11,33 +11,26 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
-import io
 import environ
 import logging
-import json
 
+env = environ.Env()
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = env.bool("DEBUG", default=True)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 REACT_APP_DIR = os.path.join(BASE_DIR, "frontend")
-
-env_file = os.path.join(BASE_DIR, ".env")
-env = environ.Env()
-env.read_env(env_file)
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG",False)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY", "DEFAULT_KEY")
 
 ALLOWED_HOSTS = env.list("HOST", default=["*"])
 SITE_ID = 1
-
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_SSL_REDIRECT = env.bool("SECURE_REDIRECT", default=False)
@@ -48,8 +41,8 @@ SECURE_SSL_REDIRECT = env.bool("SECURE_REDIRECT", default=False)
 INSTALLED_APPS = [
     "jazzmin",
     "django.contrib.admin",
-    "django.contrib.contenttypes",
     "django.contrib.auth",
+    "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -60,24 +53,24 @@ LOCAL_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
-    "corsheaders",
     "rest_framework.authtoken",
-    "dj_rest_auth.registration",
     "dj_rest_auth",
+    "dj_rest_auth.registration",
     "bootstrap4",
     "allauth",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",
-    "allauth.socialaccount.providers.facebook",
-    "allauth.socialaccount.providers.apple",
     "django_extensions",
     "drf_yasg",
     "storages",
+    "django_filters",
+    "corsheaders",
+    "django_crontab",
     "django_celery_beat",
     "django_celery_results",
+    "dbbackup",
 ]
-
 INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
@@ -91,14 +84,14 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-
 ROOT_URLCONF = "kapoorsoftwaresolutions.urls"
-
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(REACT_APP_DIR, "build")],
+        "DIRS": [
+            os.path.join(REACT_APP_DIR, "build"),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -119,7 +112,7 @@ WSGI_APPLICATION = "kapoorsoftwaresolutions.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": os.environ.get("POSTGRES_ENGINE", "django.db.backends.postgresql_psycopg2"),
+        "ENGINE": os.environ.get("POSTGRES_ENGINE", "django.db.backends.postgresql"),
         "NAME": os.environ.get("POSTGRES_DB", ""),
         "USER": os.environ.get("POSTGRES_USER", ""),
         "PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
@@ -127,10 +120,6 @@ DATABASES = {
         "PORT": os.environ.get("POSTGRES_PORT", ""),
     }
 }
-
-DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-DBBACKUP_STORAGE_OPTIONS = {'location':'database/backup/'}
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -155,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = "en-us"
-TIME_ZONE = "UTC"
+TIME_ZONE = "US/Eastern"
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -175,15 +164,18 @@ AUTHENTICATION_BACKENDS = (
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
-    os.path.join(REACT_APP_DIR, "build/static"),
+    os.path.join(REACT_APP_DIR, "build", "static"),
     os.path.join(BASE_DIR, "static"),
 ]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_URL = "/mediafiles/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
+DBBACKUP_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+DBBACKUP_STORAGE_OPTIONS = {'location':'database/backup/'}
+
+
 # allauth / users
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
@@ -202,15 +194,18 @@ REST_AUTH = {
     "REGISTER_SERIALIZER": "users.api.serializers.SignupSerializer",
 }
 
+
 # Custom user model
 AUTH_USER_MODEL = "users.User"
 
-EMAIL_HOST = env.str("EMAIL_HOST", "smtp.sendgrid.net")
-EMAIL_HOST_USER = env.str("SENDGRID_USERNAME", "apikey")
-EMAIL_HOST_PASSWORD = env.str("SENDGRID_PASSWORD", "")
-SENDGRID_EMAIL = env.str("SENDGRID_EMAIL", "")
-EMAIL_PORT = 587
+DEFAULT_FROM_EMAIL = env.str("DEFAULT_FROM_EMAIL", "")
+EMAIL_HOST = env.str("EMAIL_HOST", "")
+EMAIL_HOST_USER = env.str("SENDGRID_USERNAME", "")
+EMAIL_HOST_PASSWORD = env.str("SENDGRID_PASSWORD","")
+EMAIL_PORT = 25
 EMAIL_USE_TLS = True
+DEFAULT_TO_ADMIN = env.str("DEFAULT_TO_ADMIN", "shehrozkapoor@kapoorsoftware.com")
+
 
 # AWS S3 config
 AWS_ACCESS_KEY_ID = env.str("AWS_ACCESS_KEY_ID","")
@@ -218,11 +213,17 @@ AWS_SECRET_ACCESS_KEY = env.str("AWS_SECRET_ACCESS_KEY","")
 AWS_STORAGE_BUCKET_NAME = env.str("AWS_STORAGE_BUCKET_NAME","")
 if env.bool("AWS_S3_ENDPOINT_URL",False):
     AWS_S3_ENDPOINT_URL = env.str("AWS_S3_ENDPOINT_URL")
-AWS_S3_CUSTOM_DOMAIN = env.str("AWS_S3_CUSTOM_DOMAIN",'%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME)
 AWS_LOCATION = env.str("AWS_LOCATION","")
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 
-USE_S3 = env.bool("USE_S3",True)
+
+STRIPE_API_KEY = env.str("STRIPE_API_KEY","")
+
+USE_S3 = (
+    AWS_ACCESS_KEY_ID
+    and AWS_SECRET_ACCESS_KEY
+    and AWS_STORAGE_BUCKET_NAME
+)
 
 if USE_S3:
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400","ACL": "public-read"}
@@ -230,15 +231,19 @@ if USE_S3:
     AWS_MEDIA_LOCATION = env.str("AWS_MEDIA_LOCATION", "media")
     AWS_AUTO_CREATE_BUCKET = env.bool("AWS_AUTO_CREATE_BUCKET", True)
     DEFAULT_FILE_STORAGE = env.str(
-        "DEFAULT_FILE_STORAGE", "kapoorsoftwaresolutions.storage_backends.MediaStorage"
+        "DEFAULT_FILE_STORAGE", "kapoorsoftwaresolutions.storage_backend.MediaStorage"
     )
+    MEDIA_URL = "/mediafiles/"
+    MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
+
+
 
 # Swagger settings for api docs
 SWAGGER_SETTINGS = {
     "DEFAULT_INFO": f"{ROOT_URLCONF}.api_info",
 }
 
-if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and SENDGRID_EMAIL):
+if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
     # output email to console instead of sending
     if not DEBUG:
         logging.warning(
@@ -246,101 +251,40 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and SENDGRID_EMAIL):
         )
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
+# custom settings
 
-# STRIPE KEYS
-STRIPE_SECRET_KEY = env.str("STRIPE_SECRET_KEY", "")
-STRIPE_PUBLISHABLE_KEY = env.str("STRIPE_PUBLISHABLE_KEY", "")
-STRIPE_WEBHOOK_SECRET = env.str("STRIPE_WEBHOOK_SECRET", "")
+REST_FRAMEWORK = {
+    "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
+    "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        # "users.backend.EmailOrPhoneModelBackend",
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
+        # "rest_framework.authentication.SessionAuthentication",
+    ),
+    "EXCEPTION_HANDLER": "utils.exceptions.custom_exception_handler",
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10,
+}
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+
+CORS_ORIGIN_ALLOW_ALL = True  # added to solve CORS
+
 
 # CELERY SETTINGS
 CELERY_BROKER_URL = env.str("REDIS_URL", default="redis://redis:6379")
-CELERY_RESULT_BACKEND = env.str("REDIS_URL", default="redis://redis:6379")
 timezone = TIME_ZONE
 accept_content = ["application/json"]
+task_serializer = "json"
+cache_backend = "django-cache"
+result_extended = True
+result_backend = env.str("REDIS_URL", default="redis://redis:6379")
 RESULT_SERIALIZER = "json"
-CELERY_TASK_SERIALIZER = "json"
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_CACHE_BACKEND = "django-cache"
 
-
-# facebook
-SOCIAL_AUTH_FACEBOOK_KEY = env.str("SOCIAL_AUTH_FACEBOOK_KEY", "")
-SOCIAL_AUTH_FACEBOOK_SECRET = env.str("SOCIAL_AUTH_FACEBOOK_SECRET", "")
-# google
-SOCIAL_AUTH_GOOGLE_KEY = env.str("SOCIAL_AUTH_GOOGLE_KEY", "")
-SOCIAL_AUTH_GOOGLE_SECRET = env.str("SOCIAL_AUTH_GOOGLE_SECRET", "")
-
-# Google MAPS
-GOOGLE_MAPS_API_KEY = env.str("GOOGLE_MAPS_API_KEY", "")  # type: ignore
-
-LOGIN_REDIRECT_URL = "/"
-SOCIALACCOUNT_QUERY_EMAIL = True
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_EMAIL_REQUIRED = True
-SOCIALACCOUNT_EMAIL_VERIFICATION = True
-SOCIALACCOUNT_EMAIL_REQUIRED = True
-
-
-# ONESIGNAL CONFIG
-
-ONESIGNAL_APPID = env.str("ONESIGNAL_APPID", "")
-ONESIGNAL_RESTAPI_KEY = env.str("ONESIGNAL_RESTAPI_KEY", "")
-
-
-PUBNUB_SUBSCRIBED_KEY = env.str("PUBNUB_SUBSCRIBED_KEY", "")
-PUBNUB_PUBLISH_KEY = env.str("PUBNUB_PUBLISH_KEY", "")
-PUBNUB_SECRET_KEY = env.str("PUBNUB_SECRET_KEY", "")
-
-
-CORS_ORIGIN_ALLOW_ALL = True
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = True
-SESSION_COOKIE_SECURE = False
-
-REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "rest_framework.authentication.BasicAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
-    ],
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.AllowAny",
-    ],
-}
-
-SOCIALACCOUNT_PROVIDERS = {
-    "apple": {
-        "APP": {
-            "client_id": env.str("SOCIAL_AUTH_APPLE_CLIENT_ID", ""),
-            "secret": env.str("SOCIAL_AUTH_APPLE_SECRET", ""),
-            "key": env.str("SOCIAL_AUTH_APPLE_KEY", ""),
-            "certificate_key": """-----BEGIN PRIVATE KEY-----
-MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgBsjvdUTQb4rck17O
-ciwhA6/ANplESDTfGzB8txVoy0SgCgYIKoZIzj0DAQehRANCAAT8DzC3wdbPiX1U
-Z8Rjq3XdeLq2tDwfUC9vktz7IK4cH7TpPciVpoZuL3cOmyj7t5+SW+4ZL8APjLc5
-XYLqREhX
------END PRIVATE KEY-----""",
-        }
-    },
-    "google": {
-        "APP": {
-            "client_id": env.str("SOCIAL_AUTH_GOOGLE_CLIENT_ID", ""),
-            "secret": env.str("SOCIAL_AUTH_GOOGLE_SECRET", ""),
-        }
-    },
-    "facebook": {
-        "APP": {
-            "client_id": env.str("SOCIAL_AUTH_FACEBOOK_CLIENT_ID", ""),
-            "secret": env.str("SOCIAL_AUTH_FACEBOOK_SECRET", ""),
-        }
-    },
-}
-
-
-# Google MAPS
-GOOGLE_MAPS_API_KEY = env.str("GOOGLE_MAPS_API_KEY", "")
-
-# Mix Panel
-MIXPANEL_API_KEY = env.str("MIXPANEL_API_KEY", "")
+# production
+BASE_URL = "https://ohio-ams.kapoorsoftware.com/"
+# development
+# BASE_URL = "http://localhost:3000/"

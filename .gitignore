@@ -8,4 +8,4 @@ db.sqlite3
 .bash_history
 mediafiles/*
 staticfiles
-cerbot
+certbot

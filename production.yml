@@ -40,10 +40,10 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: kapoorsoftwaresolutions_postgres
+    image: amsohio_postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data:Z
-      - postgres_data_backups:/backups:z
+      - kapoorsoftwaresolutions_postgres_data:/var/lib/postgresql/data:Z
+      - kapoorsoftwaresolutions_postgres_data_backups:/backups:z
     ports:
       - 5432:5432
     env_file:
@@ -97,6 +97,6 @@ services:
       - db
 
 volumes:
-  postgres_data:
+  kapoorsoftwaresolutions_postgres_data:
   static_volume:
-  postgres_data_backups:
+  kapoorsoftwaresolutions_postgres_data_backups:

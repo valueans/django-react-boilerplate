@@ -15,7 +15,7 @@ services:
       - 8000:8000
     # env_file is used to manage the env variables of our project
     env_file:
-      - ./.env
+      - ./.env/.dev-sample
     depends_on:
       - redis
       - db
@@ -24,14 +24,14 @@ services:
     build:
       context: .
       dockerfile: ./compose/production/postgres/Dockerfile
-    image: kapoorsoftwaresolutions_postgres
+    image: amsohio_postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data:Z
       - postgres_data_backups:/backups:z
     ports:
       - 5432:5432
     env_file:
-      - ./.env
+      - ./.env/.prod-sample
 
   redis:
     image: redis:latest
@@ -45,7 +45,7 @@ services:
     volumes:
       - .:/app
     env_file:
-      - ./.env
+      - ./.env/.dev-sample
     depends_on:
       - redis
       - db
@@ -59,7 +59,7 @@ services:
     volumes:
       - .:/app
     env_file:
-      - ./.env
+      - ./.env/.dev-sample
     depends_on:
       - redis
       - db
@@ -73,7 +73,7 @@ services:
     volumes:
       - .:/app
     env_file:
-      - ./.env
+      - ./.env/.dev-sample
     ports:
       - 5555:5555
     depends_on:
