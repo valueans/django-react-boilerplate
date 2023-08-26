@@ -1,7 +1,14 @@
 # [Kapoor Software Solutions](https://kapoorsoftware.com)
 
 
-boostit
+Kapoor Software Solution django-react-boilerplate
+
+### features
+1. user authentication module
+2. sendgrid integration
+3. celery, celery beat and celery flower setup
+4. otp verification setup
+3. React setup with ssr (server side rendering)
 
 License: MIT
 

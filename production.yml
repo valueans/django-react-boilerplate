@@ -15,7 +15,18 @@ services:
       - 443:443
     restart: always
     depends_on:
-      - web
+      - frontend
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./compose/production/frontend/Dockerfile
+    volumes:
+      - .:/frontend
+    ports:
+      - 3006:3006
+      - 3000:3000
+
   certbot:
     image: certbot/certbot:latest
     volumes:

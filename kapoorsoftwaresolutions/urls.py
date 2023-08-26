@@ -69,8 +69,3 @@ schema_view = get_schema_view(
 urlpatterns += [
     path("api-docs/", schema_view.with_ui("swagger", cache_timeout=0), name="api_docs")
 ]
-
-urlpatterns += [path("", TemplateView.as_view(template_name="index.html"))]
-urlpatterns += [
-    re_path(r"^(?:.*)/?$", TemplateView.as_view(template_name="index.html"))
-]

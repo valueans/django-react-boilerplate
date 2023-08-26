@@ -1,7 +1,6 @@
 *.pyc
 env/
 .terraform
-.env
 postgres-data/
 venv/
 db.sqlite3
@@ -9,3 +8,7 @@ db.sqlite3
 mediafiles/*
 staticfiles
 certbot
+
+/node_modules
+# production
+/build

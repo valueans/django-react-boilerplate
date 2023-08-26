@@ -9,9 +9,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yarn": "^1.22.19"
   },
   "scripts": {
+    "dev:build-server": "NODE_ENV=production webpack --config webpack.server.js --mode=production -w",
+    "dev:start": "nodemon ./server-build/index.js",
+    "dev": "npm-run-all --parallel build dev:*",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
